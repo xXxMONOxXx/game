@@ -28,13 +28,13 @@ namespace game
 
 		public static string GetValidMove(int numberOfArgs)
 		{
-			Console.WriteLine("Enter your move:");
+			Console.Write("Enter your move:");
 			string move = Console.ReadLine();
 
 			while (!IsValidMove(move, numberOfArgs))
 			{
 				Console.WriteLine("Invalid input, please try again.");
-				Console.WriteLine("Enter your move:");
+				Console.Write("Enter your move:");
 				move = Console.ReadLine();
 			}
 
