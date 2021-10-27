@@ -1,29 +1,26 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace game
 {
 	class HMACGenerator
 	{
-
-		private static string HEX_NUMBERS = "1234567890ABCDEF";
-
-		private static int HEX_SIZE = 16;
-
-		private static int KEY_LENGTH = 64;
 		public string HMACValue { get; set; }
 
 		public string HMACKey { get; set; }
 
 		public int Move { get; set; }
 
+		private static int GetRandomNumber(int max)
+		{
+			var number = RandomNumberGenerator.GetInt32(max);
+			return number;
+		}
+
 		private static int GetRandomNumber()
 		{
-			var random = RandomNumberGenerator.Create();
-			var bytes = new byte[sizeof(ulong)];
-			random.GetNonZeroBytes(bytes);
-			return Math.Abs(BitConverter.ToInt32(bytes));
+			var number = RandomNumberGenerator.GetInt32(System.Int32.MaxValue);
+			return number;
 		}
 
 		private static string ByteToString(byte[] buff)
@@ -35,22 +32,22 @@ namespace game
 			}
 			return (sbinary);
 		}
-		private void CreateKey()
+		private void CreateKey(int numberOfArgs)
 		{
 			HMACKey = "";
-			for (int i = 0; i < KEY_LENGTH; i++)
+			for (int i = 0; i < 4; i++)
 			{
-				HMACKey += HEX_NUMBERS[GetRandomNumber() % HEX_SIZE];
+				HMACKey += GetRandomNumber().ToString("X");
 			}
 		}
 
 		public HMACGenerator(int numberOfArgs)
 		{
-			CreateKey();
-			Move = GetRandomNumber() % numberOfArgs;
+			CreateKey(numberOfArgs);
+			Move = GetRandomNumber(numberOfArgs);
 			ASCIIEncoding encoding = new ASCIIEncoding();
 			HMACSHA256 hmacsha256 = new HMACSHA256(encoding.GetBytes(HMACKey));
-			HMACValue = ByteToString(hmacsha256.ComputeHash(encoding.GetBytes(Move.ToString())));
+			HMACValue = ByteToString(hmacsha256.ComputeHash(encoding.GetBytes((Move + 1).ToString())));
 		}
 	}
 }
